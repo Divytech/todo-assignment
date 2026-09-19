@@ -1,95 +1,116 @@
-# To-Do List App (MERN Stack)
+# To-Do List App
 
-A full-stack To-Do List application built with MongoDB, Express.js, React.js, and Node.js.
+A simple MERN To-Do List application using Node.js, Express.js, MongoDB and React.
 
 ## Features
-- Create, Read, Update, and Delete tasks
-- Mark tasks as complete/incomplete
-- Search tasks by title
-- Responsive dark-themed UI
-- Separated pending and completed task sections
-- Loading indicators and error handling
 
-## Tech Stack
-- **Frontend:** React 18, Vite, Axios
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB with Mongoose
+- Add a task
+- View all tasks
+- View one task
+- Edit task title
+- Update task status using a separate API
+- Delete a task
+- Search tasks
+- Basic validation and error handling
+- React frontend connected to the backend
 
 ## Project Structure
-```
-todo-app/
+
+```text
+todo-assignment-main/
 ├── backend/
-│   ├── config/db.js           # MongoDB connection
-│   ├── models/Task.js         # Mongoose schema
-│   ├── services/taskService.js # Business logic
-│   ├── controllers/taskController.js # HTTP handlers
-│   ├── routes/taskRoutes.js   # API routes
-│   ├── middleware/errorHandler.js # Error middleware
-│   └── server.js              # Entry point
+│   ├── config/db.js
+│   ├── controllers/taskController.js
+│   ├── middleware/errorHandler.js
+│   ├── models/Task.js
+│   ├── routes/taskRoutes.js
+│   ├── services/taskService.js
+│   └── server.js
 ├── frontend/
 │   └── src/
-│       ├── api/taskApi.js     # Axios API calls
-│       ├── components/        # React components
-│       ├── App.jsx            # Main component
-│       └── App.css            # Styles
+│       ├── api/taskApi.js
+│       ├── components/
+│       ├── App.jsx
+│       └── App.css
 └── README.md
 ```
 
 ## API Endpoints
 
-| Method | Endpoint             | Description        |
-|--------|----------------------|--------------------|
-| GET    | /api/tasks           | Get all tasks      |
-| POST   | /api/tasks           | Create a task      |
-| PUT    | /api/tasks/:id       | Update a task      |
-| DELETE | /api/tasks/:id       | Delete a task      |
-| GET    | /api/tasks/search?q= | Search tasks       |
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/tasks` | Get all tasks |
+| GET | `/api/tasks/:id` | Get one task |
+| POST | `/api/tasks` | Create a task |
+| PUT | `/api/tasks/:id` | Update task details |
+| PATCH | `/api/tasks/:id/status` | Update only task status |
+| DELETE | `/api/tasks/:id` | Delete a task |
+| GET | `/api/tasks/search?q=keyword` | Search tasks |
 
-## Setup Instructions
+### Status Update Example
 
-### Prerequisites
-- Node.js (v18+)
-- MongoDB (local or Atlas)
+```json
+PATCH /api/tasks/:id/status
 
-### Backend Setup
+{
+  "completed": true
+}
+```
+
+The status update is kept separate from the normal task update endpoint as required by the assignment.
+
+## Setup
+
+### Backend
+
 ```bash
 cd backend
 npm install
 ```
-Create a `.env` file in the `backend/` directory:
-```
+
+Create `backend/.env`:
+
+```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 ```
-Start the backend server:
+
+Run:
+
 ```bash
 npm start
 ```
 
-### Frontend Setup
+### Frontend
+
+Open another terminal:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-The frontend will run on `http://localhost:5173` and proxy API requests to `http://localhost:5000`.
 
-## Environment Variables
+The Vite development server proxies `/api` requests to the backend.
 
-### Backend (.env)
-| Variable  | Description                  |
-|-----------|------------------------------|
-| PORT      | Server port (default: 5000)  |
-| MONGO_URI | MongoDB connection string    |
+For a deployed frontend, set:
 
-## Challenges Faced
+```env
+VITE_API_URL=https://your-backend-url/api/tasks
+```
 
-1. **CORS Configuration:** The React dev server runs on port 5173 while Express runs on port 5000. Solved by using Vite's built-in proxy during development and the `cors` npm package on the backend for production.
+## Testing
 
-2. **Real-time UI Sync:** Ensuring the frontend state stays in sync with the database after each CRUD operation. Solved by updating local state immediately after a successful API response instead of re-fetching the entire list.
+The APIs can be tested with Postman. Test the CRUD endpoints, search endpoint and the separate status endpoint.
 
-3. **Search Debouncing:** Typing in the search bar would fire an API call for every keystroke. Solved by implementing a 300ms debounce using `setTimeout` and `clearTimeout` to reduce unnecessary network requests.
+## Challenges
 
-4. **Error Handling Across Layers:** Mongoose validation errors, invalid ObjectId formats, and network failures all needed different handling. Solved by creating a centralized error handler middleware on the backend and an error banner component on the frontend.
+- Connecting Express to MongoDB and handling connection errors.
+- Keeping the React state updated after API requests.
+- Handling invalid task IDs and validation errors.
+- Separating task title updates from status updates.
+- Connecting the React frontend to the deployed backend.
 
-5. **MongoDB Connection Failures:** If the database connection string is wrong or the database is down, the server should not start silently. Solved by calling `connectDB()` before `app.listen()` and exiting the process on connection failure.
+## Deployment
+
+The frontend can be deployed on Netlify and the backend can be deployed on a service such as Render. Add the deployed URLs to the final submission after deployment.
